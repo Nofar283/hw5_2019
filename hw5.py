@@ -94,6 +94,13 @@ class QuestionnaireAnalysis:
 
         return df, rows_with_na
 
+    def correlate_gender_age(self) -> pd.DataFrame:
+
+        idx = self.data.set_index([self.data.index, 'age', 'gender'])
+        idx_g = idx.loc[:,'q1' : 'q5']
+        idx_g['40_plus'] = idx_g.index.get_level_values(1)>40
+        return idx_g.groupby(['gender', '40_plus']).mean()
+
 if __name__ == "__main__":
     filename = pathlib.Path("C:/Users/Nofar/Desktop/python/hw5/hw5_2019/data.json")
     qa = QuestionnaireAnalysis(filename)
@@ -105,4 +112,5 @@ if __name__ == "__main__":
 
     df = qa.remove_rows_without_mail()
 
+    qa.correlate_gender_age()
     print(df.email)
